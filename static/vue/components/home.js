@@ -777,9 +777,8 @@ const Home =Vue.component('home', {
                         </div>
                     </div>
                 </div>
-                <!-- End Event Management Chat Bot -->
 
-            </div><!-- End Right side columns -->
+            </div>
 
         </div>
     </section>
