@@ -805,15 +805,15 @@ data() {
   methods: {
     renderChart() {
       // Wait for the DOM to ensure the element is available
-      document.addEventListener('DOMContentLoaded', () => {
+      
         new ApexCharts(this.$refs.chart, {
           ...this.chartOptions,
         }).render();
-      });
+      
     },
 
     renderChart2() {
-        document.addEventListener('DOMContentLoaded', () => {
+        
           const chart2 = echarts.init(this.$refs.chart2);
           chart2.setOption({
             tooltip: {
@@ -854,7 +854,7 @@ data() {
               },
             ],
           });
-        });
+        
       },
 
 
