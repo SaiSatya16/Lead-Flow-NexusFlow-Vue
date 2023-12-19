@@ -7,14 +7,14 @@ const Sidebar = Vue.component("sidebar", {
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link " href="/">
+            <a v-if="['Admin', 'Manager'].includes(role)" class="nav-link " href="/">
                 <i class="bi bi-grid"></i>
                 <router-link to="/">Dashboard</router-link>
             </a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#management-nav" data-bs-toggle="collapse" href="#">
+            <a v-if="['Admin', 'Manager'].includes(role)"  class="nav-link collapsed" data-bs-target="#management-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-journal-text"></i><span>Management</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="management-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
@@ -35,7 +35,7 @@ const Sidebar = Vue.component("sidebar", {
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#operations-nav" data-bs-toggle="collapse" href="#">
+            <a v-if="['Admin', 'Manager'].includes(role)" class="nav-link collapsed" data-bs-target="#operations-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-people"></i><span>Operations</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="operations-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
@@ -48,7 +48,7 @@ const Sidebar = Vue.component("sidebar", {
             </ul>
         </li>
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#planning-nav" data-bs-toggle="collapse" href="#">
+            <a v-if="['Admin', 'Manager'].includes(role)" class="nav-link collapsed" data-bs-target="#planning-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-calendar-event"></i><span>Planning</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="planning-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
@@ -68,7 +68,7 @@ const Sidebar = Vue.component("sidebar", {
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#settings-nav" data-bs-toggle="collapse" href="#">
+            <a v-if="['Admin', 'Manager'].includes(role)" class="nav-link collapsed" data-bs-target="#settings-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-gear"></i><span>Settings</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="settings-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
@@ -93,6 +93,69 @@ const Sidebar = Vue.component("sidebar", {
 </aside>
     
     </div>`,
+
+    data() {
+        return {
+          role: localStorage.getItem('role'),
+          is_login: localStorage.getItem('auth-token'),
+          id : localStorage.getItem('id'),
+          inactivityTimeout: 5 * 60 * 1000, // 30 minutes in milliseconds
+          inactivityTimer: null,
+        };
+      },
+      methods: {
+        logout() {
+          localStorage.removeItem('auth-token');
+          localStorage.removeItem('role');
+          localStorage.removeItem('id');
+          localStorage.removeItem('username');
+          this.$router.push({ path: '/login' });
+        },
+        handleUserActivity() {
+          // Update the last activity timestamp
+          localStorage.setItem('lastActivityTimestamp', Date.now().toString());
+        },
+        checkInactivity() {
+          const lastActivityTimestamp = localStorage.getItem('lastActivityTimestamp');
+          const currentTime = Date.now();
+    
+          if (lastActivityTimestamp && currentTime - lastActivityTimestamp > this.inactivityTimeout) {
+            // User has been inactive for too long, clear local storage
+            this.clearLocalStorage();
+          }
+        },
+        clearLocalStorage() {
+          localStorage.removeItem('auth-token');
+          localStorage.removeItem('role');
+          this.$router.push({ path: '/login' });
+        },
+        startInactivityTimer() {
+          this.inactivityTimer = setInterval(() => {
+            this.checkInactivity();
+          }, 60000); // Check every minute (adjust as needed)
+        },
+        stopInactivityTimer() {
+          clearInterval(this.inactivityTimer);
+        },
+      },
+      mounted() {
+        // Set up event listeners to track user activity
+        document.addEventListener('mousemove', this.handleUserActivity);
+        document.addEventListener('keydown', this.handleUserActivity);
+        document.title = "Navbar";
+    
+        // Start the inactivity timer
+        this.startInactivityTimer();
+      },
+      beforeDestroy() {
+        // Clean up event listeners and the inactivity timer
+        document.removeEventListener('mousemove', this.handleUserActivity);
+        document.removeEventListener('keydown', this.handleUserActivity);
+        this.stopInactivityTimer();
+      },
+
+
+
   
   });
   

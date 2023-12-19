@@ -18,7 +18,7 @@ const header1 = Vue.component("header1", {
         </form>
     </div><!-- End Search Bar -->
 
-    <nav class="header-nav ms-auto">
+    <nav v-if="is_login" class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
 
             <li class="nav-item dropdown">
@@ -173,7 +173,7 @@ const header1 = Vue.component("header1", {
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="/ST-general-settings">
+                        <a class="dropdown-item d-flex align-items-center" href="#">
                             <i class="bi bi-person"></i>
                             <span>My Profile</span>
                         </a>
@@ -183,7 +183,7 @@ const header1 = Vue.component("header1", {
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="/ST-general-settings">
+                        <a class="dropdown-item d-flex align-items-center" href="#">
                             <i class="bi bi-gear"></i>
                             <span>Settings</span>
                         </a>
@@ -202,7 +202,7 @@ const header1 = Vue.component("header1", {
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="/pages-login">
+                        <a class="dropdown-item d-flex align-items-center" href="#">
                             <i class="bi bi-box-arrow-right"></i>
                             <span>Sign Out</span>
                         </a>
@@ -219,13 +219,20 @@ const header1 = Vue.component("header1", {
     
     </div>`,
 
+    data () {
+        return {
+           is_login: localStorage.getItem('auth-token') ? true : false,
+        }
+    },
+
 
     methods: {
         toggleSidebar() {
             
             document.body.classList.toggle('toggle-sidebar');
         }
-    }
+    },
+
   
   });
   

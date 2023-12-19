@@ -4,31 +4,24 @@ import Sidebar from "./components/sidebar.js";
 import header1 from "./components/header.js";
 import footer1 from "./components/footer.js";
 
-
-
-
-// const app = new Vue({
-//     el: '#app',
-//     delimiters: ['%{', '}'],
-//     data: {
-//         message: 'Hello Vue!',
-//         flag: false,
-//     },
-//     router,
-//     methods: {
-//         toggleSidebar() {
-//             document.body.classList.toggle('toggle-sidebar');
-//         }
-//     },
-// });
+router.beforeEach((to, from, next) => {
+    if (to.name !== 'Login' && to.name !== 'Registration'  &&  !localStorage.getItem('auth-token') ? true : false)
+      next({ name: 'Login' })
+    else next()
+  })
+  
 
 new Vue({
     el: '#app',
     template: `<div>
+    
     <header1 />
-    <Sidebar />
+    <Sidebar :key='has_changed'/>
     <router-view />
     <footer1 />
+    
+    
+    
     </div>`,
     router,
     components: {
@@ -36,5 +29,13 @@ new Vue({
         header1,
         footer1,
     },
+    data: {
+        has_changed: true,
+      },
+      watch: {
+        $route(to, from) {
+          this.has_changed = !this.has_changed
+        },
+      },
   })
   
