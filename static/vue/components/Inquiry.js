@@ -46,16 +46,26 @@ const Inquiry =Vue.component('inquiry', {
                                     <!-- Sample data rows -->
                                     <tr v-for="lead in leads"   >
                                         <th scope="row">{{lead.id}}</th>
-                                        <td> {{lead.id}} </td>
-                                        <td>{{lead.id}}</td>
-                                        <td>{{lead.id}}</td>
-                                        <td>{{lead.id}}</td>
+                                        <td> {{lead.name}} </td>
+                                        <td>{{lead.pax}}</td>
+                                        <td>{{lead.source}}</td>
+                                        <td>{{lead.date}}</td>
                                         <td>
+                                        <span v-if="lead.status === 'Confirmed'" class="badge bg-confirmed badge-pill">
+                                        <i class="bi bi-emoji-sunglasses me-1"></i> {{ lead.status }}
+                                        </span>
+
+                                        <span v-if="lead.status === 'In progress'" class="badge bg-progress badge-pill"><i
+                                        class="bi bi-emoji-neutral me-1"></i> {{lead.status}}</span>
+
+                                        <span v-if="lead.status === 'Lost'" class="badge bg-lost badge-pill"><i
+                                        class="bi bi-emoji-frown me-1"></i> {{lead.status}}</span>
+                                    
                                             
-                                            <!-- Edit Status Modal 
+                        
                                             <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editModalinquiry.id">
                                                 <i class="bi bi-pencil-square"></i>
-                                            </button> -->
+                                            </button> 
                                             
                                         </td>
                                         <td>
@@ -66,10 +76,10 @@ const Inquiry =Vue.component('inquiry', {
                                                     <i class="bi bi-telephone"></i>
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="mailto:inquiry.email">Email:
-                                                        inquiry.email</a>
-                                                    <a class="dropdown-item" href="tel:inquiry.contact_no">Contact Number:
-                                                        inquiry.contact_no</a>
+                                                    <a class="dropdown-item" :href="'mailto:'+lead.email">Email:
+                                                        {{lead.email}}</a>
+                                                    <a class="dropdown-item" :href="'tel:'+lead.contact">Contact Number:
+                                                    {{lead.contact}}</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -182,7 +192,7 @@ const Inquiry =Vue.component('inquiry', {
                     </div>
                 </div>
                 <div class="col-12 text-center">
-                    <button type="button" @click="addlead" class="btn btn-primary">Submit</button>
+                    <button type="button" @click="addlead" class="btn btn-primary" data-bs-dismiss="modal"  >Submit</button>
                     <!-- <button type="reset" class="btn btn-secondary">Reset</button> -->
                 </div>
             </div>
@@ -246,7 +256,6 @@ const Inquiry =Vue.component('inquiry', {
             if(res.ok){
                 const data = await res.json();
                 console.log(data);
-                alert("Lead Added!");
                 this.getleads();
             }
             else{
