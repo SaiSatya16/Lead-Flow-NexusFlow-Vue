@@ -63,6 +63,26 @@ def addlead():
     return jsonify({'message':'success'}),200
 
 
+@app.delete('/api/deletelead/<int:id>')
+def deletelead(id):
+    lead = Inquiry.query.get_or_404(id)
+    db.session.delete(lead)
+    db.session.commit()
+    return jsonify({'message':'success'}),200
+
+
+@app.put('/api/updateleadstatus/<int:id>')
+def updateleadstatus(id):
+    lead = Inquiry.query.get_or_404(id)
+    data = request.get_json()
+    lead.progress = data.get('status')
+    db.session.commit()
+    return jsonify({'message':'success'}),200
+
+
+
+
+
 
 
 if __name__ == '__main__':

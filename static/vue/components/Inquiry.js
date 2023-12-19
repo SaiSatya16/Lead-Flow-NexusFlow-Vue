@@ -63,7 +63,7 @@ const Inquiry =Vue.component('inquiry', {
                                     
                                             
                         
-                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editModalinquiry.id">
+                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" :data-bs-target="'#editModal' + lead.id">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button> 
                                             
@@ -84,7 +84,7 @@ const Inquiry =Vue.component('inquiry', {
                                             </div>
                                         </td>
                                         <td>
-                                            delete                                                                                                                           
+                                            <button type="button" class="btn btn-sm btn-danger" @click="deletelead(lead.id)"> Delete </button>                                                                                                                         
                                         </td>
                                     </tr>
                                 </tbody>
@@ -201,6 +201,38 @@ const Inquiry =Vue.component('inquiry', {
 </div>
 </div>
 
+
+<div v-for="lead in leads" :key="lead.id">
+          <div class="modal fade" :id="'editModal' + lead.id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="'editModalLabel' + lead.id" aria-hidden="true">
+             <div class="modal-dialog">
+                <div class="modal-content">
+                   <div class="modal-header">
+                      <h1 class="modal-title fs-5" :id="'editModal' + lead.id">Edit Category</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                   </div>
+                   <div class="modal-body">
+                   <div class="my-3">
+                   <label for="title"> Edit Status </label>
+                   <select v-model="lead.status" id="editstatus" class="form-control">
+                       <option value="Confirmed">Confirmed</option>
+                       <option value="In progress">In progress</option>
+                       <option value="Lost">Lost</option>
+                   </select>
+                    </div>
+                   </div>
+                   <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" @click="editstatus(lead)" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+
+
+
+
+
 </div>
 `,
 
@@ -263,7 +295,55 @@ const Inquiry =Vue.component('inquiry', {
                 console.log(data);
                 alert("Error!");
             }
-        }
+        },
+
+        async deletelead(id){
+
+            //are you sure?
+            if(!confirm("Are you sure you want to delete this lead?")){
+                return;
+            }
+            const res = await fetch("/api/deletelead/"+id, {
+                method: "DELETE", 
+            });
+            if(res.ok){
+                const data = await res.json();
+                console.log(data);
+                this.getleads();
+            }
+            else{
+                const data = await res.json();
+                console.log(data);
+                alert("Error!");
+            }
+        },
+
+        async editstatus(lead){
+            const res = await fetch("/api/updateleadstatus/"+lead.id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    status: lead.status,
+                }),
+            });
+            if(res.ok){
+                const data = await res.json();
+                console.log(data);
+                this.getleads();
+            }
+            else{
+                const data = await res.json();
+                console.log(data);
+                alert("Error!");
+            }
+        },
+
+
+
+
+
     },
 
 
