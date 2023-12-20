@@ -1,5 +1,5 @@
 from flask import Flask, render_template ,request,redirect, url_for, jsonify
-from model import db,Inquiry
+from model import db, User, Role, Inquiry
 import os
 from flask_cors import CORS
 from config import DevelopmentConfig
@@ -7,6 +7,7 @@ from sec import datastore
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
 from flask_security import auth_required, roles_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_restful import marshal, fields
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
@@ -43,6 +44,37 @@ def user_login():
     else:
         return jsonify({"message": "Wrong Password"}), 400
 
+user_fields = {
+    "id": fields.Integer,
+    "username": fields.String,
+    "email": fields.String,
+    "active": fields.Boolean,
+}
+
+@app.get('/users')
+@auth_required("token")
+@roles_required("Admin")
+def all_users():
+    users = User.query.all()
+    if len(users) == 0:
+        return jsonify({"message": "No User Found"}), 404
+    return marshal(users, user_fields)
+
+@app.get('/activate/manager/<int:id>')
+@auth_required("token")
+@roles_required("Admin")
+def activate_customer(id):
+    User.query.filter_by(id = id).update({'active':True})
+    db.session.commit()
+    return jsonify({"message":"Manager activated"})
+
+@app.get('/deactivate/manager/<int:id>')
+@auth_required("token")
+@roles_required("Admin")
+def deactivate_customer(id):
+    User.query.filter_by(id = id).update({'active':False})
+    db.session.commit()
+    return jsonify({"message":"Manager deactivated"})
 
 
 

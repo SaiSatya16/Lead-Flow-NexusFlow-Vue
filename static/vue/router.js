@@ -2,7 +2,7 @@ import Home from "./components/home.js";
 import Inquiry from "./components/Inquiry.js";    
 import Login from "./components/login.js";
 import Registration from "./components/registration.js";
-
+import Users from "./components/users.js";
 
 
 const routes = [
@@ -25,6 +25,11 @@ const routes = [
     path: "/registration",
     component: Registration,
     name: "Registration"
+    },
+    {
+    path: "/users",
+    component: Users,
+    name: "Users"
     },
 ];
 const router = new VueRouter({
