@@ -25,6 +25,11 @@ const Login = Vue.component("login", {
                     <p class="text-center small">Enter your username & password to login</p>
                   </div>
 
+                  
+                  <div class="alert alert-danger" v-if="error">
+                  {{ error }}
+                  </div>
+
                   <div class="row g-3 needs-validation" novalidate>
 
                     <div class="col-12">

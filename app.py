@@ -81,15 +81,9 @@ def deactivate_customer(id):
 
 
 
-
-
-
-
-
-
-
-
 @app.get('/api/getleads')
+@auth_required("token")
+@roles_required("Manager")
 def getleads():
     leads = Inquiry.query.all()
     leadlist = []
@@ -97,7 +91,11 @@ def getleads():
         leadlist.append({'id':lead.id,'name':lead.lead_name,'email':lead.email,'contact':lead.contact_no,'date':lead.date_of_event,'pax':lead.Pax,'food':lead.req_food,'source':lead.Sources,'status':lead.progress})
     return jsonify(leadlist),200
 
+
+
 @app.post('/api/addlead')
+@auth_required("token")
+@roles_required("Manager")
 def addlead():
     data = request.get_json()
     name = data.get('Name')
@@ -134,7 +132,10 @@ def addlead():
     return jsonify({'message':'success'}),200
 
 
+
 @app.delete('/api/deletelead/<int:id>')
+@auth_required("token")
+@roles_required("Manager")
 def deletelead(id):
     lead = Inquiry.query.get_or_404(id)
     db.session.delete(lead)
@@ -143,6 +144,8 @@ def deletelead(id):
 
 
 @app.put('/api/updateleadstatus/<int:id>')
+@auth_required("token")
+@roles_required("Manager")
 def updateleadstatus(id):
     lead = Inquiry.query.get_or_404(id)
     data = request.get_json()

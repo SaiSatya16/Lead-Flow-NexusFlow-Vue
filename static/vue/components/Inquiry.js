@@ -19,6 +19,11 @@ const Inquiry =Vue.component('inquiry', {
                     <div class="card-body">
                         <h5 class="card-title">Inquiries</h5>
 
+                       
+                        <div class="alert alert-danger" v-if="error">
+                        {{ error }}
+                        </div>
+
                         <!-- Button to add Inquiry -->
                         <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
                             data-bs-target="#verticalycentered">
@@ -247,13 +252,23 @@ const Inquiry =Vue.component('inquiry', {
             Email: null,
             ContactNumber: null,
             status: null,
+            userRole: localStorage.getItem('role'),
+            token: localStorage.getItem('auth-token'),
+            error: null,
         }
     },
 
     methods: {
 
         async getleads(){
-            const res = await fetch("/api/getleads");
+            const res = await fetch("/api/getleads",
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authentication-Token': this.token,
+                    'Authentication-Role': this.userRole,
+                },
+            });
             if(res.ok){
                 const data = await res.json();
                 console.log(data);
@@ -262,7 +277,7 @@ const Inquiry =Vue.component('inquiry', {
             else{
                 const data = await res.json();
                 console.log(data);
-                alert("Error!");
+                this.error = res.statusText;
             }
         },
 
@@ -273,6 +288,8 @@ const Inquiry =Vue.component('inquiry', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authentication-Token": this.token,
+                    "Authentication-Role": this.userRole,
                 },
                 body: JSON.stringify({
                     Name: this.Name,
@@ -305,6 +322,11 @@ const Inquiry =Vue.component('inquiry', {
             }
             const res = await fetch("/api/deletelead/"+id, {
                 method: "DELETE", 
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authentication-Token": this.token,
+                    "Authentication-Role": this.userRole,
+                },
             });
             if(res.ok){
                 const data = await res.json();
@@ -323,6 +345,8 @@ const Inquiry =Vue.component('inquiry', {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authentication-Token": this.token,
+                    "Authentication-Role": this.userRole,
                 },
                 body: JSON.stringify({
                     status: lead.status,

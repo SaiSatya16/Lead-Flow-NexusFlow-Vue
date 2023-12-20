@@ -69,7 +69,7 @@ const Sidebar = Vue.component("sidebar", {
                 <router-link v-if="['Manager'].includes(role)" to="/tasks_reminders"><i class="bi bi-circle"></i>Tasks & Reminders</router-link>
                 </li>
                 <li>
-                <router-lin v-if="['Manager'].includes(role)"k to="/archive"><i class="bi bi-circle"></i>Archive</router-link>
+                <router-link v-if="['Manager'].includes(role)"k to="/archive"><i class="bi bi-circle"></i>Archive</router-link>
                 </li>
             </ul>
         </li>
