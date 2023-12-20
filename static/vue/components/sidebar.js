@@ -94,65 +94,11 @@ const Sidebar = Vue.component("sidebar", {
     
     </div>`,
 
-    data() {
+    data () {
         return {
-          role: localStorage.getItem('role'),
-          is_login: localStorage.getItem('auth-token'),
-          id : localStorage.getItem('id'),
-          inactivityTimeout: 5 * 60 * 1000, // 30 minutes in milliseconds
-          inactivityTimer: null,
-        };
-      },
-      methods: {
-        logout() {
-          localStorage.removeItem('auth-token');
-          localStorage.removeItem('role');
-          localStorage.removeItem('id');
-          localStorage.removeItem('username');
-          this.$router.push({ path: '/login' });
-        },
-        handleUserActivity() {
-          // Update the last activity timestamp
-          localStorage.setItem('lastActivityTimestamp', Date.now().toString());
-        },
-        checkInactivity() {
-          const lastActivityTimestamp = localStorage.getItem('lastActivityTimestamp');
-          const currentTime = Date.now();
-    
-          if (lastActivityTimestamp && currentTime - lastActivityTimestamp > this.inactivityTimeout) {
-            // User has been inactive for too long, clear local storage
-            this.clearLocalStorage();
-          }
-        },
-        clearLocalStorage() {
-          localStorage.removeItem('auth-token');
-          localStorage.removeItem('role');
-          this.$router.push({ path: '/login' });
-        },
-        startInactivityTimer() {
-          this.inactivityTimer = setInterval(() => {
-            this.checkInactivity();
-          }, 60000); // Check every minute (adjust as needed)
-        },
-        stopInactivityTimer() {
-          clearInterval(this.inactivityTimer);
-        },
-      },
-      mounted() {
-        // Set up event listeners to track user activity
-        document.addEventListener('mousemove', this.handleUserActivity);
-        document.addEventListener('keydown', this.handleUserActivity);
-        document.title = "Navbar";
-    
-        // Start the inactivity timer
-        this.startInactivityTimer();
-      },
-      beforeDestroy() {
-        // Clean up event listeners and the inactivity timer
-        document.removeEventListener('mousemove', this.handleUserActivity);
-        document.removeEventListener('keydown', this.handleUserActivity);
-        this.stopInactivityTimer();
-      },
+            role: localStorage.getItem('role'),
+        }
+    },
 
 
 

@@ -15,7 +15,7 @@ new Vue({
     el: '#app',
     template: `<div>
     
-    <header1 />
+    <header1 :key='has_changed' />
     <Sidebar :key='has_changed'/>
     <router-view />
     <footer1 />

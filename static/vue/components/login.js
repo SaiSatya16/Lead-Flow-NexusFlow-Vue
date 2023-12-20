@@ -98,7 +98,7 @@ const Login = Vue.component("login", {
             localStorage.setItem('role', data.role);
             localStorage.setItem('id', data.id);
             localStorage.setItem('username', data.username);
-            this.$router.push('/');
+            this.$router.push({ path: '/' });
         }
         else{
             const data = await res.json();
