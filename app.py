@@ -9,6 +9,7 @@ from flask_security import auth_required, roles_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_restful import marshal, fields
 
+
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 
