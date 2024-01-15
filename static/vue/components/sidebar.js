@@ -1,5 +1,5 @@
 const Sidebar = Vue.component("sidebar", {
-    template:  `
+    template: `
     <div>
 
     <aside id="sidebar" class="sidebar">
@@ -54,25 +54,6 @@ const Sidebar = Vue.component("sidebar", {
                 </li>
             </ul>
         </li>
-        <li class="nav-item">
-            <a v-if="['Manager'].includes(role)" class="nav-link collapsed" data-bs-target="#planning-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-calendar-event"></i><span>Planning</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="planning-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                <router-link v-if="['Manager'].includes(role)" to="/calendar"><i class="bi bi-circle"></i>Calendar</router-link>
-                </li>
-                <li>
-                <router-link v-if="['Manager'].includes(role)" to="/communication"><i class="bi bi-circle"></i>Communication</router-link>
-                </li>
-                <li>
-                <router-link v-if="['Manager'].includes(role)" to="/tasks_reminders"><i class="bi bi-circle"></i>Tasks & Reminders</router-link>
-                </li>
-                <li>
-                <router-link v-if="['Manager'].includes(role)"k to="/archive"><i class="bi bi-circle"></i>Archive</router-link>
-                </li>
-            </ul>
-        </li>
 
         <li class="nav-item">
             <a v-if="['Manager'].includes(role)" class="nav-link collapsed" data-bs-target="#settings-nav" data-bs-toggle="collapse" href="#">
@@ -101,7 +82,7 @@ const Sidebar = Vue.component("sidebar", {
     
     </div>`,
 
-    data () {
+    data() {
         return {
             role: localStorage.getItem('role'),
         }
@@ -109,7 +90,7 @@ const Sidebar = Vue.component("sidebar", {
 
 
 
-  
-  });
-  
-  export default Sidebar;
+
+});
+
+export default Sidebar;

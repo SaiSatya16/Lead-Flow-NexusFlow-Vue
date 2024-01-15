@@ -93,69 +93,6 @@ const header1 = Vue.component("header1", {
                 </ul><!-- End Leads Notifications Dropdown Items -->
             </li><!-- End Leads Notifications Nav -->
 
-            <li class="nav-item dropdown">
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-chat-left-text"></i>
-                    <span class="badge bg-success badge-number">3</span>
-                </a><!-- End Messages Icon -->
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                    <li class="dropdown-header">
-                        You have 3 new messages
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="message-item">
-                        <a href="#">
-                            <img src="static/assets/Images/messages-1.jpeg" alt="" class="rounded-circle">
-                            <div>
-                                <h4>Lara Jade</h4>
-                                <p>Hello, are you available for a meeting tomorrow?</p>
-                                <p>4 hrs. ago</p>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="message-item">
-                        <a href="#">
-                            <img src="static/assets/Images/messages-2.jpeg" alt="" class="rounded-circle">
-                            <div>
-                                <h4>Jane Smith</h4>
-                                <p>Can you please share the updated sales report?</p>
-                                <p>6 hrs. ago</p>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="message-item">
-                        <a href="#">
-                            <img src="static/assets/Images/messages-3.jpeg" alt="" class="rounded-circle">
-                            <div>
-                                <h4>Ana Johnson</h4>
-                                <p>Great job on the project! Let's celebrate our success.</p>
-                                <p>8 hrs. ago</p>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="dropdown-footer">
-                        <a href="#">Show all messages</a>
-                    </li>
-                </ul><!-- End Messages Dropdown Items -->
-            </li><!-- End Messages Nav -->
-
             <li class="nav-item dropdown pe-3">
 
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">

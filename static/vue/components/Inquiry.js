@@ -1,4 +1,4 @@
-const Inquiry =Vue.component('inquiry', {
+const Inquiry = Vue.component('inquiry', {
     template: `<div>  <main id="main" class="main">
 
     <div class="pagetitle">
@@ -26,8 +26,7 @@ const Inquiry =Vue.component('inquiry', {
 
                         <!-- Button to add Inquiry -->
                         <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
-                            data-bs-target="#verticalycentered">
-                            <i class="bi bi-emoji-smile me-1"></i> Add Inquiry
+                            data-bs-target="#verticalycentered"> Add Inquiry
                         </button>
 
                         
@@ -56,18 +55,12 @@ const Inquiry =Vue.component('inquiry', {
                                         <td>{{lead.source}}</td>
                                         <td>{{lead.date}}</td>
                                         <td>
-                                        <span v-if="lead.status === 'Confirmed'" class="badge bg-confirmed badge-pill">
-                                        <i class="bi bi-emoji-sunglasses me-1"></i> {{ lead.status }}
-                                        </span>
+                                        <span v-if="lead.status === 'Confirmed'" class="badge bg-confirmed badge-pill"> {{ lead.status }} </span>
 
-                                        <span v-if="lead.status === 'In progress'" class="badge bg-progress badge-pill"><i
-                                        class="bi bi-emoji-neutral me-1"></i> {{lead.status}}</span>
+                                        <span v-if="lead.status === 'In progress'" class="badge bg-progress badge-pill"> {{lead.status}} </span>
 
-                                        <span v-if="lead.status === 'Lost'" class="badge bg-lost badge-pill"><i
-                                        class="bi bi-emoji-frown me-1"></i> {{lead.status}}</span>
+                                        <span v-if="lead.status === 'Lost'" class="badge bg-lost badge-pill"> {{lead.status}}</span>
                                     
-                                            
-                        
                                             <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" :data-bs-target="'#editModal' + lead.id">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button> 
@@ -241,9 +234,9 @@ const Inquiry =Vue.component('inquiry', {
 </div>
 `,
 
-    data: function(){
+    data: function () {
         return {
-            leads : [],
+            leads: [],
             Name: null,
             Sources: null,
             Date: null,
@@ -260,21 +253,21 @@ const Inquiry =Vue.component('inquiry', {
 
     methods: {
 
-        async getleads(){
+        async getleads() {
             const res = await fetch("/api/getleads",
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authentication-Token': this.token,
-                    'Authentication-Role': this.userRole,
-                },
-            });
-            if(res.ok){
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authentication-Token': this.token,
+                        'Authentication-Role': this.userRole,
+                    },
+                });
+            if (res.ok) {
                 const data = await res.json();
                 console.log(data);
                 this.leads = data;
             }
-            else{
+            else {
                 const data = await res.json();
                 console.log(data);
                 this.error = res.statusText;
@@ -283,7 +276,7 @@ const Inquiry =Vue.component('inquiry', {
 
 
 
-        async addlead(){
+        async addlead() {
             const res = await fetch("/api/addlead", {
                 method: "POST",
                 headers: {
@@ -302,46 +295,46 @@ const Inquiry =Vue.component('inquiry', {
                     status: this.status,
                 }),
             });
-            if(res.ok){
+            if (res.ok) {
                 const data = await res.json();
                 console.log(data);
                 this.getleads();
             }
-            else{
+            else {
                 const data = await res.json();
                 console.log(data);
                 alert("Error!");
             }
         },
 
-        async deletelead(id){
+        async deletelead(id) {
 
             //are you sure?
-            if(!confirm("Are you sure you want to delete this lead?")){
+            if (!confirm("Are you sure you want to delete this lead?")) {
                 return;
             }
-            const res = await fetch("/api/deletelead/"+id, {
-                method: "DELETE", 
+            const res = await fetch("/api/deletelead/" + id, {
+                method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
                     "Authentication-Token": this.token,
                     "Authentication-Role": this.userRole,
                 },
             });
-            if(res.ok){
+            if (res.ok) {
                 const data = await res.json();
                 console.log(data);
                 this.getleads();
             }
-            else{
+            else {
                 const data = await res.json();
                 console.log(data);
                 alert("Error!");
             }
         },
 
-        async editstatus(lead){
-            const res = await fetch("/api/updateleadstatus/"+lead.id, {
+        async editstatus(lead) {
+            const res = await fetch("/api/updateleadstatus/" + lead.id, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -352,12 +345,12 @@ const Inquiry =Vue.component('inquiry', {
                     status: lead.status,
                 }),
             });
-            if(res.ok){
+            if (res.ok) {
                 const data = await res.json();
                 console.log(data);
                 this.getleads();
             }
-            else{
+            else {
                 const data = await res.json();
                 console.log(data);
                 alert("Error!");
@@ -372,7 +365,7 @@ const Inquiry =Vue.component('inquiry', {
 
 
 
-    mounted : function(){
+    mounted: function () {
         document.title = "Inquiry";
         this.getleads();
     }
