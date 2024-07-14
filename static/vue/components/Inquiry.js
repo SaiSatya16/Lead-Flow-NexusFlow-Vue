@@ -38,9 +38,10 @@ const Inquiry =Vue.component('inquiry', {
                                 <thead>
                                     <tr>
                                         <th scope="col">ID</th>
-                                        <th scope="col">Lead Name</th>
+                                        <th scope="col">Company Name</th>
+                                        <th scope="col">Organizer</th>
+                                        <th scope="col">Location/Area</th>
                                         <th scope="col">Number of Pax</th>
-                                        <th scope="col">Sources</th>
                                         <th scope="col">D.O.E</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Contact</th>
@@ -48,22 +49,22 @@ const Inquiry =Vue.component('inquiry', {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Sample data rows -->
                                     <tr v-for="lead in leads"   >
                                         <th scope="row">{{lead.id}}</th>
-                                        <td> {{lead.name}} </td>
-                                        <td>{{lead.pax}}</td>
-                                        <td>{{lead.source}}</td>
-                                        <td>{{lead.date}}</td>
+                                        <td> {{lead.Company_Name}} </td>
+                                        <td>{{lead.Organizer}}</td>
+                                        <td>{{lead.Location_Area}}</td>
+                                        <td>{{lead.Pax}}</td>
+                                        <td>{{lead.date_of_event}}</td>
                                         <td>
-                                        <span v-if="lead.status === 'Confirmed'" class="badge bg-confirmed badge-pill">
+                                        <span v-if="lead.progress === 'Confirmed'" class="badge bg-confirmed badge-pill">
                                         <i class="bi bi-emoji-sunglasses me-1"></i> {{ lead.status }}
                                         </span>
 
-                                        <span v-if="lead.status === 'In progress'" class="badge bg-progress badge-pill"><i
+                                        <span v-if="lead.progress === 'In progress'" class="badge bg-progress badge-pill"><i
                                         class="bi bi-emoji-neutral me-1"></i> {{lead.status}}</span>
 
-                                        <span v-if="lead.status === 'Lost'" class="badge bg-lost badge-pill"><i
+                                        <span v-if="lead.progress === 'Lost'" class="badge bg-lost badge-pill"><i
                                         class="bi bi-emoji-frown me-1"></i> {{lead.status}}</span>
                                     
                                             
@@ -83,8 +84,8 @@ const Inquiry =Vue.component('inquiry', {
                                                 <div class="dropdown-menu">
                                                     <a class="dropdown-item" :href="'mailto:'+lead.email">Email:
                                                         {{lead.email}}</a>
-                                                    <a class="dropdown-item" :href="'tel:'+lead.contact">Contact Number:
-                                                    {{lead.contact}}</a>
+                                                    <a class="dropdown-item" :href="'tel:'+lead.contact_no">Contact Number:
+                                                    {{lead.contact_no}}</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -116,25 +117,24 @@ const Inquiry =Vue.component('inquiry', {
         <div class="modal-body">
             <div class="row g-3">
                 <div class="col-md-6">
+                <div class="form-floating">
+                    <input v-model="Company_Name" type="text" class="form-control" id="floatingCompanyName"
+                        placeholder="Company Name" name="floatingCompanyName">
+                    <label for="floatingCompanyName">Company Name</label>
+                </div>
+                </div>
+                <div class="col-md-6">
                     <div class="form-floating">
-                        <input v-model="Name" type="text" class="form-control" id="floatingName"
-                            placeholder="Lead Name" name="floatingName">
-                        <label for="floatingName">Lead Name</label>
+                        <input v-model="Organizer" type="text" class="form-control" id="floatingOrganizer"
+                            placeholder="Organizer" name="floatingOrganizer">
+                        <label for="floatingOrganizer">Organizer</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <select v-model="Sources" class="form-select" id="floatingSources"
-                            aria-label="Sources" name="floatingSources">
-                            <option selected disabled>Choose...</option>
-                            <option value="Call">Call</option>
-                            <option value="Email">Email</option>
-                            <option value="Social Media">Social Media</option>
-                            <option value="WhatsApp">WhatsApp</option>
-                            <option value="Referral">Referral</option>
-                            <option value="Google Ad">Google Ad</option>
-                        </select>
-                        <label for="floatingSources">Sources</label>
+                        <input v-model="Location_Area" type="text" class="form-control" id="floatingLocationArea"
+                            placeholder="Location or Area" name="floatingLocationArea">
+                        <label for="floatingLocationArea">Location or Area</label>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -218,7 +218,7 @@ const Inquiry =Vue.component('inquiry', {
                    <div class="modal-body">
                    <div class="my-3">
                    <label for="title"> Edit Status </label>
-                   <select v-model="lead.status" id="editstatus" class="form-control">
+                   <select v-model="lead.progress" id="editstatus" class="form-control">
                        <option value="Confirmed">Confirmed</option>
                        <option value="In progress">In progress</option>
                        <option value="Lost">Lost</option>
@@ -244,8 +244,9 @@ const Inquiry =Vue.component('inquiry', {
     data: function(){
         return {
             leads : [],
-            Name: null,
-            Sources: null,
+            Company_Name: null,
+            Organizer: null,
+            Location_Area: null,
             Date: null,
             Pax: null,
             FoodType: null,
@@ -261,7 +262,7 @@ const Inquiry =Vue.component('inquiry', {
     methods: {
 
         async getleads(){
-            const res = await fetch("/api/getleads",
+            const res = await fetch("/api/inquiry",
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -284,7 +285,7 @@ const Inquiry =Vue.component('inquiry', {
 
 
         async addlead(){
-            const res = await fetch("/api/addlead", {
+            const res = await fetch("/api/inquiry", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -292,14 +293,15 @@ const Inquiry =Vue.component('inquiry', {
                     "Authentication-Role": this.userRole,
                 },
                 body: JSON.stringify({
-                    Name: this.Name,
-                    Sources: this.Sources,
-                    Date: this.Date,
+                    Company_Name: this.Company_Name,
+                    Organizer: this.Organizer,
+                    Location_Area: this.Location_Area,
+                    date_of_event: this.Date,
                     Pax: this.Pax,
-                    FoodType: this.FoodType,
-                    Email: this.Email,
-                    ContactNumber: this.ContactNumber,
-                    status: this.status,
+                    req_food: this.FoodType,
+                    email: this.Email,
+                    contact_no: this.ContactNumber,
+                    progress: this.status
                 }),
             });
             if(res.ok){
@@ -320,7 +322,7 @@ const Inquiry =Vue.component('inquiry', {
             if(!confirm("Are you sure you want to delete this lead?")){
                 return;
             }
-            const res = await fetch("/api/deletelead/"+id, {
+            const res = await fetch("/api/inquiry/"+id, {
                 method: "DELETE", 
                 headers: {
                     "Content-Type": "application/json",
@@ -341,7 +343,7 @@ const Inquiry =Vue.component('inquiry', {
         },
 
         async editstatus(lead){
-            const res = await fetch("/api/updateleadstatus/"+lead.id, {
+            const res = await fetch("/api/inquiry/"+lead.id, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -349,7 +351,7 @@ const Inquiry =Vue.component('inquiry', {
                     "Authentication-Role": this.userRole,
                 },
                 body: JSON.stringify({
-                    status: lead.status,
+                    progress: lead.progress,
                 }),
             });
             if(res.ok){
