@@ -1,4 +1,4 @@
-const Inquiry =Vue.component('inquiry', {
+const Inquiry = Vue.component('inquiry', {
     template: `<div>  <main id="main" class="main">
 
     <div class="pagetitle">
@@ -26,8 +26,7 @@ const Inquiry =Vue.component('inquiry', {
 
                         <!-- Button to add Inquiry -->
                         <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
-                            data-bs-target="#verticalycentered">
-                            <i class="bi bi-emoji-smile me-1"></i> Add Inquiry
+                            data-bs-target="#verticalycentered"> Add Inquiry
                         </button>
 
                         
@@ -241,7 +240,7 @@ const Inquiry =Vue.component('inquiry', {
 </div>
 `,
 
-    data: function(){
+    data: function () {
         return {
             leads : [],
             Company_Name: null,
@@ -275,7 +274,7 @@ const Inquiry =Vue.component('inquiry', {
                 console.log(data);
                 this.leads = data;
             }
-            else{
+            else {
                 const data = await res.json();
                 console.log(data);
                 this.error = res.statusText;
@@ -304,22 +303,22 @@ const Inquiry =Vue.component('inquiry', {
                     progress: this.status
                 }),
             });
-            if(res.ok){
+            if (res.ok) {
                 const data = await res.json();
                 console.log(data);
                 this.getleads();
             }
-            else{
+            else {
                 const data = await res.json();
                 console.log(data);
                 alert("Error!");
             }
         },
 
-        async deletelead(id){
+        async deletelead(id) {
 
             //are you sure?
-            if(!confirm("Are you sure you want to delete this lead?")){
+            if (!confirm("Are you sure you want to delete this lead?")) {
                 return;
             }
             const res = await fetch("/api/inquiry/"+id, {
@@ -330,12 +329,12 @@ const Inquiry =Vue.component('inquiry', {
                     "Authentication-Role": this.userRole,
                 },
             });
-            if(res.ok){
+            if (res.ok) {
                 const data = await res.json();
                 console.log(data);
                 this.getleads();
             }
-            else{
+            else {
                 const data = await res.json();
                 console.log(data);
                 alert("Error!");
@@ -354,12 +353,12 @@ const Inquiry =Vue.component('inquiry', {
                     progress: lead.progress,
                 }),
             });
-            if(res.ok){
+            if (res.ok) {
                 const data = await res.json();
                 console.log(data);
                 this.getleads();
             }
-            else{
+            else {
                 const data = await res.json();
                 console.log(data);
                 alert("Error!");
@@ -374,7 +373,7 @@ const Inquiry =Vue.component('inquiry', {
 
 
 
-    mounted : function(){
+    mounted: function () {
         document.title = "Inquiry";
         this.getleads();
     }

@@ -1,4 +1,4 @@
-from flask import Flask, render_template ,request,redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from model import db, User, Role, Inquiry
 import os
 from flask_cors import CORS
