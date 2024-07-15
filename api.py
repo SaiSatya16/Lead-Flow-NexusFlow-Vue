@@ -13,6 +13,8 @@ from flask import jsonify
 from flask import request
 import pandas as pd
 from io import BytesIO
+from datetime import datetime
+from sqlalchemy.exc import IntegrityError
 
 api = Api()
 
@@ -121,7 +123,9 @@ class InquiryApi(Resource):
         db.session.add(inquiry)
         db.session.commit()
         return {"message":"Inquiry Created"}
-    
+
+
+#below code is for uploading excel file but it will not check for duplicate entry in the database
 class ExcelUploadApi(Resource):
     @auth_required("token")
     @any_role_required("Admin", "Manager")
@@ -160,7 +164,68 @@ class ExcelUploadApi(Resource):
                 return {"message": f"Error processing file: {str(e)}"}, 500
         return {"message": "Invalid file format. Please upload an Excel file (.xlsx)"}, 400
 
-    
+# below code is for checking duplicate entry, to try this code comment the above code and uncomment this code
+''' class ExcelUploadApi(Resource):
+    @auth_required("token")
+    @any_role_required("Admin", "Manager")
+    def post(self):
+        if 'file' not in request.files:
+            return {"message": "No file part"}, 400
+        file = request.files['file']
+        if file.filename == '':
+            return {"message": "No selected file"}, 400
+        if file and file.filename.endswith('.xlsx'):
+            try:
+                df = pd.read_excel(BytesIO(file.read()))
+                required_columns = ["Company_Name", "Organizer", "Location_Area", "date_of_event", "Pax", "req_food", "email", "contact_no", "progress"]
+                if not all(col in df.columns for col in required_columns):
+                    return {"message": "Excel file is missing required columns"}, 400
+                
+                records_added = 0
+                records_skipped = 0
+
+                for _, row in df.iterrows():
+                    date_of_event = row['date_of_event'].strftime('%Y-%m-%d') if pd.notnull(row['date_of_event']) else None
+                    
+                    # Check if a record with the same Company_Name, Organizer, and date_of_event already exists
+                    existing_inquiry = Inquiry.query.filter_by(
+                        Company_Name=row['Company_Name'],
+                        Organizer=row['Organizer'],
+                        date_of_event=date_of_event
+                    ).first()
+
+                    if existing_inquiry:
+                        records_skipped += 1
+                        continue
+
+                    inquiry = Inquiry(
+                        Company_Name=row['Company_Name'],
+                        Organizer=row['Organizer'],
+                        Location_Area=row['Location_Area'],
+                        date_of_event=date_of_event,
+                        Pax=int(row['Pax']),
+                        req_food=row['req_food'],
+                        email=row['email'],
+                        contact_no=str(row['contact_no']),
+                        progress=row['progress']
+                    )
+                    db.session.add(inquiry)
+                    records_added += 1
+
+                db.session.commit()
+                return {
+                    "message": f"Successfully imported {records_added} records. {records_skipped} records were skipped as duplicates."
+                }, 200
+            except IntegrityError:
+                db.session.rollback()
+                return {"message": "Error: Duplicate entry found. The upload was aborted."}, 400
+            except Exception as e:
+                db.session.rollback()
+                return {"message": f"Error processing file: {str(e)}"}, 500
+        return {"message": "Invalid file format. Please upload an Excel file (.xlsx)"}, 400 '''
+
+
+ 
 api.add_resource(InquiryApi,"/api/inquiry","/api/inquiry/<int:id>")
 api.add_resource(ExcelUploadApi, "/api/upload-excel")
 
