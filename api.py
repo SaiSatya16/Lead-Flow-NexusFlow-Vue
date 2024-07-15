@@ -13,7 +13,7 @@ from flask import jsonify
 from flask import request
 import pandas as pd
 from io import BytesIO
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy.exc import IntegrityError
 
 api = Api()
