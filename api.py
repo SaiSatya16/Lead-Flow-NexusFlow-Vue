@@ -10,6 +10,9 @@ from functools import wraps
 from flask import abort
 from flask_security import roles_accepted
 from flask import jsonify
+from flask import request
+import pandas as pd
+from io import BytesIO
 
 api = Api()
 
@@ -119,6 +122,46 @@ class InquiryApi(Resource):
         db.session.commit()
         return {"message":"Inquiry Created"}
     
+class ExcelUploadApi(Resource):
+    @auth_required("token")
+    @any_role_required("Admin", "Manager")
+    def post(self):
+        if 'file' not in request.files:
+            return {"message": "No file part"}, 400
+        file = request.files['file']
+        if file.filename == '':
+            return {"message": "No selected file"}, 400
+        if file and file.filename.endswith('.xlsx'):
+            try:
+                df = pd.read_excel(BytesIO(file.read()))
+                required_columns = ["Company_Name", "Organizer", "Location_Area", "date_of_event", "Pax", "req_food", "email", "contact_no", "progress"]
+                if not all(col in df.columns for col in required_columns):
+                    return {"message": "Excel file is missing required columns"}, 400
+                
+                for _, row in df.iterrows():
+                    # Convert Timestamp to string
+                    date_of_event = row['date_of_event'].strftime('%Y-%m-%d') if pd.notnull(row['date_of_event']) else None
+                    inquiry = Inquiry(
+                        Company_Name=row['Company_Name'],
+                        Organizer=row['Organizer'],
+                        Location_Area=row['Location_Area'],
+                        date_of_event=date_of_event,
+                        Pax=int(row['Pax']),
+                        req_food=row['req_food'],
+                        email=row['email'],
+                        contact_no=str(row['contact_no']),
+                        progress=row['progress']
+                    )
+                    db.session.add(inquiry)
+                db.session.commit()
+                return {"message": f"Successfully imported {len(df)} records"}, 200
+            except Exception as e:
+                db.session.rollback()
+                return {"message": f"Error processing file: {str(e)}"}, 500
+        return {"message": "Invalid file format. Please upload an Excel file (.xlsx)"}, 400
+
+    
 api.add_resource(InquiryApi,"/api/inquiry","/api/inquiry/<int:id>")
+api.add_resource(ExcelUploadApi, "/api/upload-excel")
 
     

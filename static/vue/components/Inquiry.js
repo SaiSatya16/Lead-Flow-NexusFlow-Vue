@@ -18,16 +18,22 @@ const Inquiry = Vue.component('inquiry', {
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Inquiries</h5>
-
-                       
                         <div class="alert alert-danger" v-if="error">
                         {{ error }}
                         </div>
-
                         <!-- Button to add Inquiry -->
                         <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
                             data-bs-target="#verticalycentered"> Add Inquiry
                         </button>
+                        <div>
+                        <div class="mb-3">
+                            <input type="file" @change="handleFileUpload" accept=".xlsx" class="form-control" id="excelFile">
+                            <button @click="uploadExcel" class="btn btn-success mt-2">Upload Excel</button>
+                        </div>
+                        <div v-if="uploadMessage" class="alert" :class="{'alert-success': !uploadMessage.includes('Error'), 'alert-danger': uploadMessage.includes('Error')}">
+                            {{ uploadMessage }}
+                        </div>
+                        </div>
 
                         
 
@@ -255,6 +261,8 @@ const Inquiry = Vue.component('inquiry', {
             userRole: localStorage.getItem('role'),
             token: localStorage.getItem('auth-token'),
             error: null,
+            selectedFile: null,
+            uploadMessage: '',
         }
     },
 
@@ -365,13 +373,41 @@ const Inquiry = Vue.component('inquiry', {
             }
         },
 
+        handleFileUpload(event) {
+            this.selectedFile = event.target.files[0];
+        },
 
+        uploadExcel() {
+            if (!this.selectedFile) {
+                alert('Please select a file first');
+                return;
+            }
 
+            const formData = new FormData();
+            formData.append('file', this.selectedFile);
 
-
+            fetch('/api/upload-excel', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Authentication-Token': this.token,
+                    'Authentication-Role': this.userRole,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.uploadMessage = data.message;
+                if (!data.message.includes('Error')) {
+                    this.getleads(); // Refresh the list after successful upload
+                }
+            })
+            .catch(error => {
+                this.uploadMessage = 'An error occurred during upload';
+                console.error('Error:', error);
+            });
+        },
+    
     },
-
-
 
     mounted: function () {
         document.title = "Inquiry";
